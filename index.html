@@ -464,7 +464,7 @@ h2 { font-size: clamp(26px, 7vw, 34px); }
     <h2>QUEST MAP</h2>
     <p class="lead" id="qchapter"></p>
     <div class="qmap" id="qmap">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline id="qpath" fill="none" stroke="#4a3a7a" stroke-width="1.1" stroke-dasharray="2.4 2.4" vector-effect="none"></polyline></svg>
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline id="qpath" fill="none" stroke="#4a3a7a" stroke-width="4" stroke-dasharray="8 8" vector-effect="non-scaling-stroke"></polyline></svg>
     </div>
   </section>
 </template>
@@ -1237,11 +1237,12 @@ const CONFIG = {
     if (!show("t-map", 3)) return;
     const map = $("#qmap"), items = [...CONFIG.quests, { label: "FINISH", finish: true }], n = items.length;
     const nRiddle = CONFIG.quests.filter(q => q.kind === "riddle").length;
-    const pos = i => [i % 2 ? 72 : 28, 100 - (i + .5) / n * 100];
+    const cols = innerWidth >= 760 ? 5 : 2, rows = Math.ceil(n / cols);
+    const pos = i => { const r = Math.floor(i / cols), k = i % cols, c = r % 2 ? cols - 1 - k : k; return [(c + .5) / cols * 100, 100 - (r + .5) / rows * 100]; };
     $("#qchapter").textContent = quest < nRiddle ? "BAB 1: TEKA-TEKI" : quest < CONFIG.quests.length ? "BAB 2: MINI GAME" : "TINGGAL SATU LAGI";
-    map.style.height = n * 86 + "px";
+    map.style.width = `min(calc(100% - 8px), ${cols === 5 ? 920 : 440}px)`;
+    map.style.height = `max(${rows * 76}px, min(${rows * 124}px, calc(100dvh - 210px)))`;
     $("#qpath").setAttribute("points", items.map((_, i) => pos(i).join(",")).join(" "));
-    let nowEl = null;
     items.forEach((q, i) => {
       const b = document.createElement("button"), done = i < quest, now = i === quest;
       b.type = "button"; b.className = "qnode" + (done ? " done" : "") + (now ? " now" : ""); b.disabled = !now;
@@ -1250,12 +1251,11 @@ const CONFIG = {
       t0.textContent = done ? "SELESAI" : q.finish ? "HADIAH" : q.kind === "riddle" ? "SOAL " + (i + 1) : "GAME " + (i - nRiddle + 1);
       const t = document.createElement("b"); t.textContent = q.label;
       b.append(t0, t); map.append(b);
-      if (now) { nowEl = b; b.addEventListener("click", () => {
+      if (now) { b.addEventListener("click", () => {
         audio(); sfx.tick();
         wipe(q.finish ? runScene : q.kind === "riddle" ? () => riddleScene(i) : () => GAMES[q.kind](q));
       }); }
     });
-    if (nowEl) nowEl.scrollIntoView({ block: "center" });
   }
   const finishQuest = (target, words) => moodCard(target, () => { quest++; wipe(mapScene); }, words);
 
