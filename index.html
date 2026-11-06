@@ -300,6 +300,13 @@ h2 { font-size: clamp(26px, 7vw, 34px); }
 .spad.lit { opacity: 1; transform: scale(.94); box-shadow: 0 0 0 6px var(--paper); }
 
 /* Running scene */
+.ratewin { width: min(calc(100% - 8px), 560px); }
+.rbody { padding: 20px 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.rfaces { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.rface { border: 0; background: var(--pink-1); padding: 8px 2px 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; font: 400 9px/1.1 var(--label); color: var(--ink); min-width: 0; box-shadow: 0 -3px 0 var(--ink), 0 3px 0 var(--ink), -3px 0 0 var(--ink), 3px 0 0 var(--ink); }
+.rface canvas { width: min(100%, 56px); image-rendering: pixelated; }
+.rface:hover { background: var(--blue-1); }
+.rface.pick { background: var(--pink-3); animation: pop .25s steps(4); }
 .endwords { width: min(calc(100% - 8px), 560px); margin: 4px; font-size: 21px; text-align: center; background: var(--paper); box-shadow: 0 -4px 0 var(--ink), 0 4px 0 var(--ink), -4px 0 0 var(--ink), 4px 0 0 var(--ink); animation: pop .3s steps(4); }
 .frame.run { height: min(calc(100dvh - 190px), 460px); min-height: 300px; width: min(calc(100% - 8px), 860px); }
 
@@ -511,7 +518,22 @@ h2 { font-size: clamp(26px, 7vw, 34px); }
       <canvas class="world custom" id="truckcv" aria-hidden="true"></canvas>
     </div>
     <p class="mwtext endwords" id="endwords" hidden></p>
-    <button class="btn blue" id="watch2" type="button" hidden><span data-h>TONTON VIDEO LAGI</span></button>
+    <div class="row"><button class="btn blue" id="watch2" type="button" hidden><span data-h>TONTON VIDEO LAGI</span></button>
+    <button class="btn" id="torate" type="button" hidden><span data-h>LANJUT</span></button></div>
+  </section>
+</template>
+
+<!-- ENDING: MOOD RATING -->
+<template id="t-rate">
+  <section class="scene">
+    <div class="win ratewin">
+      <div class="bar"><span>RATING.SAV</span><b><i></i><i></i><i></i></b></div>
+      <div class="rbody">
+        <h2>MOOD KAMU SEKARANG?</h2>
+        <div class="rfaces" id="rfaces" role="group" aria-label="Pilih ekspresi"></div>
+        <p class="mwtext" id="ratewords" hidden></p>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -582,7 +604,8 @@ const CONFIG = {
   video: "",   // only used if the stored video at the end of this file is removed
   startMood: 5,
   pinMood: 12,
-  endWords: "Semoga setelah kamu melihat semua ini mood km membaik dan recharge energy kamu ya biar ugak lemes 🤪",
+  endWords: "Semoga setelah kamu melihat semua ini mood km membaik dan recharge energy kamu ya biar ugak lemes dan bisa bilang terus aku harus ngapain lagiii yaa wleee 🤪",
+  rateWords: "Rating sesuai dgn mood kamu setelah melihat ini dgn pap wajah kamu yg manis cantik lucu gemesin itu ya, jadi aku tau ekspresi km saat ini wleee 🤪",
   runWords: "Yang penting sekarang kamu cepet sembuh, biar bisa yapping lagi, ngomel-ngomel, teriak-teriak, nyanyi-nyanyi yang ror itu 😝",
   quests: [
     { kind: "riddle", theme: "fruit", label: "BUAH", words: "Hai 0.00001BBEPRINCESS 😜 Get well soon ya!", q: "Buah buah apa yang ada tanda tanda sakit?", mood: 20,
@@ -1713,12 +1736,29 @@ const CONFIG = {
       if (e > 4200 && !told) {
         told = true; sfx.sparkle();
         const r = cv.getBoundingClientRect(); burst(70, { x: r.left + r.width * .7, y: r.top + r.height * .6, spread: 3 });
-        words.hidden = false; watch.hidden = false; stage.scrollTop = stage.scrollHeight;
+        words.hidden = false; watch.hidden = false; $("#torate").hidden = false; stage.scrollTop = stage.scrollHeight;
       }
     };
     worlds.push(new World(cv, { scale: cssScale(cv), horizon: .5, island: false, hearts: false, after }));
     watch.addEventListener("click", openVideo);
+    $("#torate").addEventListener("click", () => { audio(); sfx.tick(); wipe(rateScene); });
     if (calm) renderWorlds(6000);
+  }
+
+  /* Last screen: pick an expression */
+  function rateScene() {
+    if (!show("t-rate", 6)) return;
+    const row = $("#rfaces"), words = $("#ratewords");
+    [10, 35, 60, 90, 100].forEach((v, i) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "rface"; b.setAttribute("aria-label", MOODS[i][1]);
+      const cv = document.createElement("canvas"); cv.width = cv.height = 16; drawFace(cv.getContext("2d"), v);
+      const t = document.createElement("span"); t.textContent = MOODS[i][1];
+      b.append(cv, t); row.append(b);
+      b.addEventListener("click", () => {
+        audio(); [...row.children].forEach(x => x.classList.remove("pick")); b.classList.add("pick"); sfx.tap(i);
+        if (words.hidden) { words.textContent = CONFIG.rateWords; words.hidden = false; sfx.sparkle(); burst(60, { stagger: 30 }); }
+      });
+    });
   }
 
   /* Video player: the video has no sound, so the song keeps playing */
