@@ -363,7 +363,7 @@ h2 { font-size: clamp(26px, 7vw, 34px); }
       </div>
       <form class="form" id="pinform" autocomplete="off" novalidate>
         <h1><span data-h>♡ A LITTLE SECRET ♡</span></h1>
-        <p class="lead">Someone has prepared a little surprise for you...</p>
+        <p class="lead">Someone has prepared a little surprise for you</p>
         <p class="eyebrow" id="pinlabel">ENTER YOUR SECRET PIN</p>
         <div class="slots" id="slots" role="group" aria-labelledby="pinlabel"></div>
         <p class="hint" id="hint"></p>
@@ -481,7 +481,7 @@ h2 { font-size: clamp(26px, 7vw, 34px); }
       </div>
       <form class="qform" id="qform" autocomplete="off" novalidate>
         <label class="eyebrow" for="ans">JAWABAN KAMU</label>
-        <input id="ans" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Tulis di sini...">
+        <input id="ans" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Tulis di sini">
         <button class="btn" type="submit">JAWAB</button>
       </form>
       <div class="qclues" id="qclues" aria-live="polite"></div>
@@ -591,8 +591,8 @@ const CONFIG = {
     { kind: "riddle", theme: "bird", label: "BURUNG", words: "Istirahat yang cukup ya, jangan begadang, jangan telat makan, minum yang banyak. Kalau badan masih nggak enak jangan dipaksain. Tugas kamu sekarang cuma satu, sembuh 😝", q: "Burung burung apa yang serba gamau?", mood: 30,
       clues: ["Ditanya apa aja, jawabannya selalu nolak.", "Nama burungnya kata \"nggak\" disebut dua kali."],
       answers: ["53fbf96b72b85036", "3a1d01e84f3bc821"] },
-    { kind: "riddle", theme: "food", label: "JAJANAN", words: "Masih dibuka lagi ya? Sabar yaa, ini kamu masih penasaran apa mulai membaik mutnya? Kalo kamu masih tap tap ........ 😜 Kalo dikasih tau tuh jangan batu, jangan galak-galak, walaupun kamunya sendiri gabisa digalakin atau dengan suara yang tinggi. Toh ini juga demi kebaikan kamu sendiri 😤", q: "Jajanan apa yang bikin bayi ketawa?", mood: 40,
-      clues: ["Bulat, kenyal, dari aci, biasanya ditusuk.", "Inget permainan buat bikin bayi ketawa: ciluk..."],
+    { kind: "riddle", theme: "food", label: "JAJANAN", words: "Masih dibuka lagi ya? Sabar yaa, ini kamu masih penasaran apa mulai membaik mutnya? Kalo kamu masih tap tap 😜 Kalo dikasih tau tuh jangan batu, jangan galak-galak, walaupun kamunya sendiri gabisa digalakin atau dengan suara yang tinggi. Toh ini juga demi kebaikan kamu sendiri 😤", q: "Jajanan apa yang bikin bayi ketawa?", mood: 40,
+      clues: ["Bulat, kenyal, dari aci, biasanya ditusuk.", "Inget permainan buat bikin bayi ketawa: ciluk"],
       answers: ["812c7b647a64c1ed"] },
     { kind: "riddle", theme: "animal", label: "HEWAN", words: "Kalau kamu masih kesel juga gapapa. Kamu berhak kok kesel sama aku. Makin gangguin makin bikin kesel ga repot kok wkwkwk 🤪", q: "Hewan hewan apa yang gajelas?", mood: 50,
       clues: ["Kalau bingung sama sesuatu, biasanya kamu bilang apa?", "Bunyinya mirip hewan hitam putih yang suka bambu."],
@@ -1046,7 +1046,7 @@ const CONFIG = {
       burst(10 * taps, { x: r.left + r.width / 2, y: r.top + r.height / 2, spread: 2.4 });
       if (taps < 3) {
         box.className = "box-wrap"; void box.offsetWidth; box.className = "box-wrap w" + taps;
-        lead.textContent = taps === 1 ? "Something is moving inside..." : "One more tap!";
+        lead.textContent = taps === 1 ? "Something is moving inside" : "One more tap!";
         return;
       }
       opened = true; box.className = "box-wrap open";
@@ -1512,7 +1512,7 @@ const CONFIG = {
     const seq = []; let at = 0, turn = false;
     const flash = (i, ms = 340) => { pads[i].classList.add("lit"); tone(notes[i], 0, ms / 1000, .05); setTimeout(() => pads[i].classList.remove("lit"), ms); };
     const play = () => {
-      turn = false; at = 0; g.lead.textContent = "Perhatikan nadanya...";
+      turn = false; at = 0; g.lead.textContent = "Perhatikan nadanya";
       seq.forEach((n, i) => setTimeout(() => { if (grid.isConnected) flash(n); }, 500 + i * 560));
       setTimeout(() => { if (grid.isConnected) { turn = true; g.lead.textContent = "Giliran kamu!"; } }, 620 + seq.length * 560);
     };
